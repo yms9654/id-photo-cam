@@ -70,9 +70,52 @@
 크롭으로 고칠 수 없는 것(고개 각도·눈 감김·노출)만 엄격히 막는다.
 정확한 규격은 촬영 후 인물 마스크로 실제 정수리를 찾아 맞춘다.
 
+## 설치와 업데이트
+
+APK는 [Releases](https://github.com/yms9654/id-photo-cam/releases)에 올린다.
+
+| 파일 | 대상 |
+|---|---|
+| `idphoto-arm64-v8a.apk` | 2017년 이후 나온 대부분의 폰 |
+| `idphoto-armeabi-v7a.apk` | 오래된 32비트 폰 |
+| `idphoto-universal.apk` | 위 파일이 설치되지 않을 때 |
+
+앱은 실행할 때 `update.json` 을 읽어 설치된 `versionCode` 와 비교하고, 더 높으면 화면 위에
+알림 띠를 띄운다. 누르면 기기 ABI에 맞는 APK를 받아 시스템 설치 화면까지 띄운다.
+확인은 12시간에 한 번만 하고, "나중에"를 누른 버전은 다시 묻지 않는다.
+
+**무음 자동 업데이트는 안 된다.** 안드로이드는 사이드로드 앱이 사용자 확인 없이 자기 자신을
+교체하는 것을 허용하지 않는다. 설치 버튼은 사용자가 눌러야 하고, 안드로이드 8 이상에서는
+이 앱에 '알 수 없는 앱 설치' 권한을 한 번 허용해 줘야 한다.
+
+### 새 버전 내보내기
+
+```bash
+# 1. app/build.gradle.kts 의 versionCode / versionName 올리기
+./gradlew assembleRelease              # universal
+./gradlew assembleRelease -PabiSplit   # ABI별
+
+# 2. 릴리스 만들기
+gh release create v1.2 <apk들> --title "..." --notes "..."
+
+# 3. update.json 의 versionCode / versionName / notes / 주소를 고쳐 main 에 푸시
+```
+
+`update.json` 은 `main` 브랜치 루트에 있고, 앱은 raw.githubusercontent.com 으로 읽는다.
+
 ## 빌드
 
 JDK 17 이상, Android SDK 34 필요.
+
+배포용 서명 키는 저장소에 올리지 않는다. `local.properties` 에 아래를 넣어 둔다.
+**키가 바뀌면 기존 설치본에 덮어쓸 수 없어 업데이트가 막히므로 키 파일을 잃어버리면 안 된다.**
+
+```properties
+releaseStoreFile=/경로/idphoto-release.jks
+releaseStorePassword=...
+releaseKeyAlias=idphoto
+releaseKeyPassword=...
+```
 
 ```bash
 ./gradlew assembleDebug            # 디버그 APK
@@ -108,10 +151,19 @@ app/src/main/java/com/yms/idphoto/
 │   ├── SpecReport.kt        검증 리포트
 │   ├── Imaging.kt           디코딩 · 용량 제한 JPEG 인코딩
 │   └── MediaSaver.kt        갤러리 저장 · 공유
-└── ui/                      Compose 화면 (카메라 · 결과 · 테마)
+├── ui/                      Compose 화면 (카메라 · 결과 · 테마)
 ```
 
 ## 개인정보
 
-사진과 얼굴 데이터는 기기 밖으로 나가지 않는다. ML Kit 모델은 APK 에 포함되어 있어
-네트워크 권한도 필요 없고, 앱에 인터넷 권한을 선언하지 않았다.
+**사진과 얼굴 데이터는 기기 밖으로 나가지 않는다.** 얼굴 검출·인물 분리·크롭·저장이 모두
+기기 안에서 끝난다. ML Kit 모델이 APK 에 들어 있어 처리에는 네트워크가 아예 필요 없다.
+
+인터넷 권한은 **업데이트 확인에만** 쓴다. 통신하는 곳은 두 군데뿐이다.
+
+- `raw.githubusercontent.com` — 버전 정보(`update.json`) 읽기
+- `github.com` / `objects.githubusercontent.com` — 새 APK 내려받기
+
+업데이트 기능이 필요 없다면 `AndroidManifest.xml` 에서 `INTERNET` 과
+`REQUEST_INSTALL_PACKAGES` 권한을 지우고 `MainActivity` 의 `checkForUpdate` 호출을
+빼면 된다. 그러면 네트워크를 전혀 쓰지 않는 앱이 된다.
