@@ -1,0 +1,24 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 3.5:4.5 규격 프레임 -->
+    <path
+        android:pathData="M39,30 h30 v38 h-30 z"
+        android:strokeColor="#D4B36A"
+        android:strokeWidth="2"
+        android:fillColor="#00000000" />
+    <!-- 머리 가이드 -->
+    <path
+        android:pathData="M54,36 m-8,0 a8,10 0,1,0 16,0 a8,10 0,1,0 -16,0"
+        android:fillColor="#F0EDE4" />
+    <!-- 어깨 -->
+    <path
+        android:pathData="M42,68 c0,-9 5.5,-14 12,-14 c6.5,0 12,5 12,14 z"
+        android:fillColor="#F0EDE4" />
+    <!-- 재단 표시 -->
+    <path android:pathData="M33,30 h4 M39,24 v4 M75,30 h-4 M69,24 v4 M33,68 h4 M39,74 v-4 M75,68 h-4 M69,74 v-4"
+        android:strokeColor="#D4B36A"
+        android:strokeWidth="1.6" />
+</vector>

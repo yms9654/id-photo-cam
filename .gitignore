@@ -1,0 +1,19 @@
+# Gradle / Android 빌드 산출물
+build/
+.gradle/
+.kotlin/
+local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# IDE
+.idea/
+*.iml
+.externalNativeBuild
+.cxx
+captures/
+
+# OS
+.DS_Store
