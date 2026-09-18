@@ -1,0 +1,10 @@
+{
+  "versionCode": 2,
+  "versionName": "1.1",
+  "notes": "머리카락 경계 처리 개선",
+  "apk": {
+    "arm64-v8a": "https://github.com/yms9654/id-photo-cam/releases/download/v1.1/idphoto-arm64-v8a.apk",
+    "armeabi-v7a": "https://github.com/yms9654/id-photo-cam/releases/download/v1.1/idphoto-armeabi-v7a.apk",
+    "universal": "https://github.com/yms9654/id-photo-cam/releases/download/v1.1/idphoto-universal.apk"
+  }
+}
